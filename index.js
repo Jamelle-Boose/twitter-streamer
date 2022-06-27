@@ -1,20 +1,127 @@
-// Setup access to Twitter and Google APIs using env variables
+require("dotenv").config()
 
-// Setup a rule based filter on the search endpoint. It uses a company name and a hashtag from the environment and adds a rule to the search.
+const needle = require("needle")
+const GOOGLE_SPREADSHEET = require("google-spreadsheet").GoogleSpreadsheet
 
-// Only add this filter rule if it is not already defined.
+const GOOGLE_CREDENTIALS = require("./client_secret.json")
+const TOKEN = process.env.TW_BEARER_TOKEN
 
-// Transform a tweet's data from the stream into a Google Spreadsheet row
-// Add the transformed data as a new row in the sheet
+const STREAM_API_URL = "https://api.twitter.com/2/tweets/search/stream"
+const RULES_API_URL = `${STREAM_API_URL}/rules`
+const AUTH_HEADERS = {
+  headers: {
+    Authorization: `Bearer ${TOKEN}`,
+    "Content-type": "application/json",
+  },
+  timeout: 20000,
+}
 
-// Listen to a stream of tweets from Twitter's API
+if (!TOKEN) {
+  terminate(
+    "Config mismatch. Expected TW_BEARER_TOKEN environment variable to contain a Twitter API token. Found undefined."
+  )
+}
 
-// Open a stream with the tweet data we are interested in
+async function setupRules() {
+  const search_term = process.env.TW_TERM
+  if (!search_term) {
+    terminate(
+      "Config mismatch. Expecting TW_TERM environment variable to contain name of company."
+    )
+  }
+  const search_hashtag = process.env.TW_HASHTAG
+  if (!search_hashtag) {
+    terminate(
+      "Config mismatch. Expecting TW_HASHTAG environment variable to contain a campaign hashtag."
+    )
+  }
 
-// As tweets stream in - transform and store them
+  const filter_rule = `(${search_term} OR #${search_hashtag}) -is:retweet -is:reply`
 
-// Helper function to print an error message and terminate
+  return needle("get", RULES_API_URL, {}, AUTH_HEADERS).then(async res => {
+    const { body } = res,
+      { data } = body
+    if (body && (!data || !data.some(rule => rule.value === filter_rule))) {
+      await addRule(filter_rule)
+    }
+    console.log(
+      "\x1b[36m%s\x1b[0m",
+      `Setting filter to search for original tweets containing ${search_term} or #${search_hashtag} with links.`
+    )
+  })
+}
 
-// Helper function to add a rule to the stream
+async function getGoogleDoc() {
+  if (!process.env.TW_GOOGLE_DOC_ID) {
+    terminate(
+      "Config mismatch. Expecting TW_GOOGLE_DOC_ID environment variable to contain a Google Spreadsheet id. Found undefined."
+    )
+    return
+  }
+  const doc = new GOOGLE_SPREADSHEET(process.env.TW_GOOGLE_DOC_ID)
+  await doc.useServiceAccountAuth(GOOGLE_CREDENTIALS)
+  await doc.loadInfo()
+  return doc
+}
 
-// Start the program
+function storeTweetInSheet(sheet, data) {
+  if (!data) return
+  try {
+    const json = JSON.parse(data)
+    const { id, created_at, text } = json.data
+    const handle = json.includes.users[0].username
+    sheet.addRow([
+      `https://twitter.com/${handle}/status/${id}`,
+      handle,
+      created_at,
+      text,
+    ])
+  } catch (err) {
+    // No need to do anything
+  }
+}
+
+function handleTweets(sheet) {
+  const extraFields = "tweet.fields=created_at&expansions=author_id"
+  const stream = needle.get(`${STREAM_API_URL}?${extraFields}`, AUTH_HEADERS)
+
+  stream
+    .on("data", data => storeTweetInSheet(sheet, data))
+    .on("err", error => {
+      switch (error.code) {
+        case "ECONNREFUSED":
+        default:
+          terminate(error.code)
+      }
+    })
+  return stream
+}
+
+function terminate(text) {
+  console.error(text)
+  process.exit(1)
+}
+
+async function addRule(filter_rule) {
+  const filter = {
+    add: [
+      {
+        value: filter_rule,
+      },
+    ],
+  }
+  return needle("post", RULES_API_URL, filter, AUTH_HEADERS)
+    .then()
+    .catch(err => terminate(err.message))
+}
+
+;(async () => {
+  await setupRules()
+  const doc = await getGoogleDoc()
+  if (!doc) {
+    terminate("Could not connect to Google Document.")
+    return
+  }
+  const sheet = doc.sheetsByIndex[0]
+  handleTweets(sheet)
+})()
