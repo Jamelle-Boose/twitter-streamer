@@ -1,10 +1,12 @@
 require("dotenv").config()
 
 const needle = require("needle")
+const logger = require("./util/logger")
 const GOOGLE_SPREADSHEET = require("google-spreadsheet").GoogleSpreadsheet
 
 const GOOGLE_CREDENTIALS = require("./client_secret.json")
-const TOKEN = process.env.TW_BEARER_TOKEN
+// const TOKEN = process.env.TW_BEARER_TOKEN
+let TOKEN
 
 const STREAM_API_URL = "https://api.twitter.com/2/tweets/search/stream"
 const RULES_API_URL = `${STREAM_API_URL}/rules`
@@ -14,6 +16,7 @@ const AUTH_HEADERS = {
     "Content-type": "application/json",
   },
   timeout: 20000,
+  stream_length: 0,
 }
 
 if (!TOKEN) {
@@ -70,14 +73,23 @@ function storeTweetInSheet(sheet, data) {
     const json = JSON.parse(data)
     const { id, created_at, text } = json.data
     const handle = json.includes.users[0].username
-    sheet.addRow([
-      `https://twitter.com/${handle}/status/${id}`,
-      handle,
-      created_at,
-      text,
-    ])
+    sheet
+      .addRow([
+        `https://twitter.com/${handle}/status/${id}`,
+        handle,
+        created_at,
+        text,
+      ])
+      .then(
+        ({
+          ["Tweet Link"]: tweetLink,
+          ["Author id"]: authorId,
+          Timestamp,
+          Text,
+        }) => logger.log("info", { tweetLink, authorId, Timestamp, Text })
+      )
   } catch (err) {
-    // No need to do anything
+    // no need to do anything here
   }
 }
 
@@ -87,18 +99,14 @@ function handleTweets(sheet) {
 
   stream
     .on("data", data => storeTweetInSheet(sheet, data))
-    .on("err", error => {
-      switch (error.code) {
-        case "ECONNREFUSED":
-        default:
-          terminate(error.code)
-      }
-    })
+    .on("done", msg => terminate(msg))
+    .on("err", err => terminate(err))
   return stream
 }
 
 function terminate(text) {
-  console.error(text)
+  logger.error(text)
+  // console.error(text)
   process.exit(1)
 }
 
@@ -112,7 +120,7 @@ async function addRule(filter_rule) {
   }
   return needle("post", RULES_API_URL, filter, AUTH_HEADERS)
     .then()
-    .catch(err => terminate(err.message))
+    .catch(err => terminate(err))
 }
 
 ;(async () => {
