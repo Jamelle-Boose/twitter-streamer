@@ -5,8 +5,7 @@ const logger = require("./util/logger")
 const GOOGLE_SPREADSHEET = require("google-spreadsheet").GoogleSpreadsheet
 
 const GOOGLE_CREDENTIALS = require("./client_secret.json")
-// const TOKEN = process.env.TW_BEARER_TOKEN
-let TOKEN
+const TOKEN = process.env.TW_BEARER_TOKEN
 
 const STREAM_API_URL = "https://api.twitter.com/2/tweets/search/stream"
 const RULES_API_URL = `${STREAM_API_URL}/rules`
@@ -107,7 +106,7 @@ function handleTweets(sheet) {
 function terminate(text) {
   logger.error(text)
   // console.error(text)
-  process.exit(1)
+  // process.exit(1)
 }
 
 async function addRule(filter_rule) {
