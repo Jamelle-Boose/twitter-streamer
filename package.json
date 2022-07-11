@@ -5,9 +5,9 @@
 	"main": "index.mjs",
 	"scripts": {
 		"test": "jest",
-		"start": "node index.js",
-		"trace": "node --trace-sync-io index.js",
-		"debug": "NODE_DEBUG=fs node index.js"
+		"start": "node index.mjs",
+		"trace": "node --trace-sync-io index.mjs",
+		"debug": "NODE_DEBUG=fs node index.mjs"
 	},
 	"repository": {
 		"type": "git",
