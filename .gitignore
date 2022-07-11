@@ -104,4 +104,4 @@ dist
 .tern-port
 
 # Client secret file
-client_secret.json
+client_secret.js
