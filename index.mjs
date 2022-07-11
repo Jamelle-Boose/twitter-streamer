@@ -5,7 +5,7 @@ import { Client } from "twitter-api-sdk"
 import logger from "./util/logger.mjs"
 import convertDate from "./util/convert_date.mjs"
 import { GoogleSpreadsheet } from "google-spreadsheet"
-import GoogleAuth from "./client_secret.js"
+import GoogleAuth from "./client_secret.mjs"
 
 async function getGoogleDoc() {
   const doc = new GoogleSpreadsheet(process.env.TW_GOOGLE_DOC_ID)
