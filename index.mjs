@@ -53,7 +53,7 @@ async function main() {
       sheet.addRow([tweetLink, handle, created_at, text])
 
       // Log to console
-      console.log(`${chalk.blue(handle)} | ${
+      console.log(`${chalk.whiteBright.bgMagenta(handle)} | ${
         text.length > 30 ? `${text.slice(0, 30)}...` : text
       } | ${chalk.greenBright(convertDate(created_at))}
 		
