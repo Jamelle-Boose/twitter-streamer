@@ -20,6 +20,7 @@
 	},
 	"homepage": "https://github.com/Jamelle-Boose/twitter-streamer#readme",
 	"dependencies": {
+		"chalk": "^5.0.1",
 		"dotenv": "^16.0.1",
 		"google-spreadsheet": "^3.3.0",
 		"jest": "^28.1.2",

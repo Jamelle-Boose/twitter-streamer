@@ -6,6 +6,7 @@ import logger from "./util/logger.mjs"
 import convertDate from "./util/convert_date.mjs"
 import { GoogleSpreadsheet } from "google-spreadsheet"
 import GoogleAuth from "./client_secret.mjs"
+import chalk from "chalk"
 
 async function getGoogleDoc() {
   const doc = new GoogleSpreadsheet(process.env.TW_GOOGLE_DOC_ID)
@@ -52,7 +53,9 @@ async function main() {
       sheet.addRow([tweetLink, handle, created_at, text])
 
       // Log to console
-      console.log(`${handle} | ${text} | ${convertDate(created_at)}
+      console.log(`${chalk.blue(handle)} | ${
+        text.length > 30 ? `${text.slice(0, 30)}...` : text
+      } | ${chalk.greenBright(convertDate(created_at))}
 		
 		`)
     }
