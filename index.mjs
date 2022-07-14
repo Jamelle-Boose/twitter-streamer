@@ -54,7 +54,7 @@ async function main() {
 
       // Log to console
       console.log(`${chalk.whiteBright.bgMagenta(handle)} | ${
-        text.length > 30 ? `${text.slice(0, 30)}...` : text
+        text.length > 50 ? `${text.slice(0, 50)}...` : text
       } | ${chalk.greenBright(convertDate(created_at))}
 		
 		`)
