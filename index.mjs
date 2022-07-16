@@ -25,7 +25,7 @@ async function main() {
   await client.tweets.addOrDeleteRules({
     add: [
       {
-        value: `(${search_term} OR #${search_hashtag}) -is:retweet -is:reply`,
+        value: `(${search_term} OR #${search_hashtag}) -is:retweet -is:reply -is:quote lang:en`,
         tag: `${search_term} OR #${search_hashtag}`,
       },
     ],
