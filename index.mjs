@@ -4,6 +4,7 @@ dotenv.config()
 import { Client } from "twitter-api-sdk"
 import logger from "./util/logger.mjs"
 import convertDate from "./util/convert_date.mjs"
+import blocked_users from "./util/blocked_users.mjs"
 import { GoogleSpreadsheet } from "google-spreadsheet"
 import GoogleAuth from "./client_secret.mjs"
 import chalk from "chalk"
@@ -49,6 +50,11 @@ async function main() {
       const { id, created_at, text } = data
       const handle = tweet.includes.users[0].username
       const tweetLink = `https://twitter.com/${handle}/status/${id}`
+
+      if (blocked_users.includes(handle)) {
+        logger.log("info", `${handle} is blocked`)
+        continue
+      }
 
       sheet.addRow([tweetLink, handle, created_at, text])
 
