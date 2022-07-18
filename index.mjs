@@ -20,7 +20,7 @@ async function getGoogleDoc() {
 async function main() {
   const search_term = process.env.TW_TERM
   const search_hashtag = process.env.TW_HASHTAG
-  const client = new Client(process.env.TW_BEARER_TOKEN)
+  const client = new Client(process.env.PROD_TW_BEARER_TOKEN)
 
   await client.tweets.addOrDeleteRules({
     add: [
