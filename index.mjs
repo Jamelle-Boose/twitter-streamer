@@ -32,7 +32,16 @@ async function main() {
   })
 
   const rules = await client.tweets.getRules()
-  console.log("info", rules)
+  console.log(`
+	
+		${chalk.green("Twitter rules:")}`)
+
+  rules.data.forEach(rule => {
+    console.log(`
+			${chalk.yellow(rule.tag)}
+			${chalk.blue(rule.value)}
+		`)
+  })
 
   const doc = await getGoogleDoc()
   const sheet = doc.sheetsByIndex[0]
