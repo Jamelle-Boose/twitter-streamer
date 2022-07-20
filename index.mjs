@@ -56,14 +56,13 @@ async function main() {
         continue
       }
 
-      sheet.addRow([tweetLink, handle, created_at, text])
+      const row = await sheet.addRow([tweetLink, handle, created_at, text])
 
-      // Log to console
-      console.log(`${chalk.whiteBright.bgMagenta(handle)} | ${
-        text.length > 50 ? `${text.slice(0, 50)}...` : text
-      } | ${chalk.greenBright(convertDate(created_at))}
-		
-		`)
+      console.log(`${chalk.whiteBright.bgMagenta(row["Author id"])} | ${
+        row.Text.length > 50 ? `${row.Text.slice(0, 50)}...` : row.Text
+      } | ${chalk.greenBright(convertDate(row.Timestamp))}
+
+      `)
     }
   } catch (error) {
     logger.log("error", error)
