@@ -1,5 +1,5 @@
 {
-	"name": "twitter-streamer",
+	"name": "tweeeti",
 	"version": "1.0.0",
 	"description": "An app to stream Tweets in real-time.",
 	"main": "index.mjs",
