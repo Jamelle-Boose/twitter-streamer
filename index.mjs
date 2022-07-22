@@ -17,6 +17,11 @@ async function getGoogleDoc() {
   return doc
 }
 
+function terminate(error) {
+  logger.log("error", error)
+  process.exitCode = 1
+}
+
 async function main() {
   const search_term = process.env.TW_TERM
   const search_hashtag = process.env.TW_HASHTAG
@@ -25,7 +30,7 @@ async function main() {
   await client.tweets.addOrDeleteRules({
     add: [
       {
-        value: `(${search_term} OR #${search_hashtag}) -is:retweet -is:reply -is:quote`,
+        value: `(${search_term} OR #${search_hashtag}) -is:retweet -is:reply -is:quote lang:en`,
         tag: `${search_term} OR #${search_hashtag}`,
       },
     ],
@@ -74,8 +79,7 @@ async function main() {
       `)
     }
   } catch (error) {
-    logger.log("error", error)
-    process.exitCode = 1
+    terminate(error)
   }
 }
 
