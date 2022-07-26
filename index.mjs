@@ -75,6 +75,7 @@ async function main() {
     }
   } catch (error) {
     logger.log("error", error)
+    process.exitCode = 1
   }
 }
 
