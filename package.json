@@ -15,6 +15,7 @@
 	},
 	"author": "Jamelle-Boose",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"license": "ISC",
 	"bin": {
 		"tweeety": "bin/tweeety.js"
@@ -22,6 +23,15 @@
 =======
 	"license": "MIT",
 >>>>>>> 3436411 (Update license)
+=======
+	"license": "MIT",
+=======
+	"license": "ISC",
+	"bin": {
+		"tweeety": "bin/tweeety.js"
+	},
+>>>>>>> 40be012 (refactor: beta complete)
+>>>>>>> 5a9a35f (refactor: beta complete)
 	"bugs": {
 		"url": "https://github.com/Jamelle-Boose/twitter-streamer/issues"
 	},
