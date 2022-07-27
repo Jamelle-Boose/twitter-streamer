@@ -14,7 +14,7 @@
 		"url": "git+https://github.com/Jamelle-Boose/twitter-streamer.git"
 	},
 	"author": "Jamelle-Boose",
-	"license": "ISC",
+	"license": "MIT",
 	"bin": {
 		"tweeety": "bin/tweeety.js"
 	},
