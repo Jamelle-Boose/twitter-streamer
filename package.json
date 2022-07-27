@@ -2,10 +2,10 @@
 	"name": "tweeety",
 	"version": "1.0.0",
 	"description": "An app to stream Tweets in real-time.",
-	"main": "index.mjs",
+	"type": "module",
 	"scripts": {
 		"test": "jest",
-		"start": "node index.mjs",
+		"start": "node ./bin/tweeety",
 		"trace": "node --trace-sync-io index.mjs",
 		"debug": "NODE_DEBUG=fs node index.mjs"
 	},
@@ -15,6 +15,9 @@
 	},
 	"author": "Jamelle-Boose",
 	"license": "ISC",
+	"bin": {
+		"tweeety": "bin/tweeety.js"
+	},
 	"bugs": {
 		"url": "https://github.com/Jamelle-Boose/twitter-streamer/issues"
 	},
