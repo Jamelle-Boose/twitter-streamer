@@ -14,10 +14,14 @@
 		"url": "git+https://github.com/Jamelle-Boose/twitter-streamer.git"
 	},
 	"author": "Jamelle-Boose",
+<<<<<<< HEAD
 	"license": "ISC",
 	"bin": {
 		"tweeety": "bin/tweeety.js"
 	},
+=======
+	"license": "MIT",
+>>>>>>> 3436411 (Update license)
 	"bugs": {
 		"url": "https://github.com/Jamelle-Boose/twitter-streamer/issues"
 	},
