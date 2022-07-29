@@ -105,3 +105,6 @@ dist
 
 # Client secret file
 client_secret.mjs
+
+# VSCode
+.vscode/
