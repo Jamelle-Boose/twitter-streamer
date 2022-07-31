@@ -79,7 +79,12 @@ async function main() {
       `)
     }
   } catch (error) {
+<<<<<<< HEAD
     terminate(error)
+=======
+    logger.log("error", error)
+    process.exitCode = 1
+>>>>>>> main
   }
 }
 
